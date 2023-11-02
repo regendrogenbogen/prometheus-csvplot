@@ -55,8 +55,8 @@ def main():
     configs = load_settings()
     write_header = True
     now = datetime.now
-    # create performance directory with timestamp
-    ts_title = now().strftime('%Y-%m-%d-%H:%M:%S')
+    # create performance directory with timestamp, underscore to work on windows
+    ts_title = now().strftime('%Y-%m-%d-%H_%M_%S')
     new_folder = 'csv/metrics_' + ts_title
     mkdir(new_folder)
 
@@ -70,7 +70,11 @@ def main():
             title = metric_name
             try:
                 value = result['metric']['__name__']
-                title = value
+                # add the identifier so octoprint metrics don't overwrite each other
+                pattern = r'identifier="([^"]+)"'
+                match = re.search(pattern, title)
+                identifier = match.group(1)
+                title = value + '_' + identifier
             except:
                 pass
 
