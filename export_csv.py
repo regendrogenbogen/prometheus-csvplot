@@ -70,11 +70,15 @@ def main():
             title = metric_name
             try:
                 value = result['metric']['__name__']
-                # add the identifier so octoprint metrics don't overwrite each other
-                pattern = r'identifier="([^"]+)"'
-                match = re.search(pattern, title)
-                identifier = match.group(1)
-                title = value + '_' + identifier
+                try:
+                    pattern = r'identifier="([^"]+)"'
+                    match = re.search(pattern, title)
+                    identifier = match.group(1)
+                    title = value + '_' + identifier
+                except:
+                    # if there's no identifier (happens...)
+                    title = value
+                    pass
             except:
                 pass
 
